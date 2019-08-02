@@ -16,10 +16,9 @@ def create_perturb_files(in_path, in_files, seed):
 
 def perturb_array(array, s, a):
     shape = array.shape
-    parray = np.copy(array)
     np.random.seed(s)
     p = (np.random.rand(*shape) * 2 - 1) * a + 1  # *2-1: map to [-1,1), *a: rescale to amplitude, +1 perturb around 1
-    parray = array*p
+    parray = np.copy(array*p)
     return parray
 
 
