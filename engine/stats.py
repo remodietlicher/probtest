@@ -68,6 +68,7 @@ def stats(config):
         df.sort_values(by=["time", "heigth"], inplace=True)
 
         # add column with number of timestep (hacky hacky)
+        # TODO make this part pythonic
         timesteps = np.unique(df["time"])
         time = df["time"]
         ntime = np.ones_like(time)
