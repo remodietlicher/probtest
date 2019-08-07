@@ -10,15 +10,18 @@ from util.constants import dataframe_type_dict
 
 def stats(config):
     file_regex = config.get("file_regex")
-    input_dir_regex = config.get("input_dir_regex")
-    data_base_dir = config.get("data_base_dir")
-    variable_names = config.get("variable_names").split(",")
+    base_dir = config.get("base_dir")
+    if not base_dir:
+        base_dir = ''
+    model_output_dir = config.get("model_output_dir")
+    check_variable_names = config.get("check_variable_names").split(",")
     time_dim = config.get("time_dim")
     height_dim = config.get("height_dim")
     hor_dims = config.get("hor_dims").split(",")
-    out_file_name = config.get("out_file_name")
+    stats_file_name = config.get("stats_file_name")
 
-    input_dirs = ["{}/{}".format(data_base_dir, d) for d in file_names_from_regex(data_base_dir, input_dir_regex)]
+    input_dirs = ["{}/{}".format(model_output_dir, d)
+                  for d in file_names_from_regex(model_output_dir, base_dir.format("[0-9]+"))]
     for input_dir in input_dirs:
         # load all model output data files matching the regex
         input_files = file_names_from_regex(input_dir, file_regex)
@@ -30,7 +33,7 @@ def stats(config):
             time = d.variables[time_dim][:]
             heigth = d.variables[height_dim][:]
 
-            for v in variable_names:
+            for v in check_variable_names:
                 dims = d.variables[v].dimensions
                 var = d.variables[v][:]
 
@@ -78,6 +81,9 @@ def stats(config):
             cnt += 1
         df["ntime"] = ntime
 
-        out_path = "{}/{}".format(input_dir, out_file_name)
+        out_path = "{}/{}".format(input_dir, stats_file_name)
         print("writing stats file to {}.".format(out_path))
         df.to_csv(path_or_buf=out_path, sep=",", index=False)
+
+        for d in data:
+            d.close()

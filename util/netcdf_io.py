@@ -4,6 +4,7 @@ import numpy as np
 
 def nc4_get_copy(name_in, name_out):
     din = Dataset(name_in, 'r')
+    print("creating netCDF4 file: {}".format(name_out))
     dout = Dataset(name_out, 'w')
 
     # Copy dimensions

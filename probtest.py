@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 import argparse
 import configparser
-from util.constants import MODE_CHECK, MODE_PERTURB, MODE_STATS, MODE_TOLERANCE
+from util.constants import MODE_CHECK, MODE_PERTURB, MODE_STATS, MODE_TOLERANCE, MODE_RUN_ENSEMBLE
 from engine.perturb import perturb
 from engine.stats import stats
 from engine.check import check
 from engine.tolerance import tolerance
+from engine.run_ensemble import run_ensemble
 import sys
 
 
@@ -22,7 +23,7 @@ def make_parser():
 
 
 def main(args):
-    config = configparser.ConfigParser()
+    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation())
     config.read(args.config)
 
     mode = args.mode
@@ -35,9 +36,11 @@ def main(args):
             check(config[MODE_CHECK])
         elif m == MODE_TOLERANCE:
             tolerance(config[MODE_TOLERANCE])
+        elif m == MODE_RUN_ENSEMBLE:
+            run_ensemble(config[MODE_RUN_ENSEMBLE])
         else:
-            sys.exit("invalid mode '{}' selected. must be '{}', '{}', '{}' or '{}'"
-                     .format(mode, MODE_PERTURB, MODE_CHECK, MODE_STATS, MODE_TOLERANCE))
+            sys.exit("invalid mode '{}' selected. must be '{}', '{}', '{}', '{}' or '{}'"
+                     .format(mode, MODE_PERTURB, MODE_CHECK, MODE_STATS, MODE_TOLERANCE, MODE_RUN_ENSEMBLE))
 
 
 if __name__ == "__main__":
