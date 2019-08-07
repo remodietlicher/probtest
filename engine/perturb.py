@@ -5,10 +5,10 @@ import numpy as np
 
 def create_perturb_files(in_path, in_files, seed):
     path = os.path.abspath(in_path)
-    perturb_path = path + "/perturb"
+    perturb_path = path + "/perturb_{}".format(seed)
     if not os.path.exists(perturb_path):
         os.mkdir(perturb_path)
-    data = [nc4_get_copy("{}/{}".format(path, f), "{}/{}_{}".format(perturb_path, seed, f))
+    data = [nc4_get_copy("{}/{}".format(path, f), "{}/{}".format(perturb_path, f))
             for f in in_files.split(",")]
 
     return data
@@ -23,14 +23,14 @@ def perturb_array(array, s, a):
 
 
 def perturb(config):
-    input_dir = config.get("input_dir")
+    data_base_dir = config.get("data_base_dir")
     files = config.get("files")
     seeds = np.array(config.get("seeds").split(",")).astype(int)
-    variable_names = config.get("variables").split(",")
+    variable_names = config.get("variable_names").split(",")
     amplitude = config.getfloat("amplitude")
 
     for s in seeds:
-        data = create_perturb_files(input_dir, files, s)
+        data = create_perturb_files(data_base_dir, files, s)
         for d in data:
             for vn in variable_names:
                 d.variables[vn][:] = perturb_array(d.variables[vn][:], s, amplitude)
