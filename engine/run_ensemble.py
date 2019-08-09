@@ -46,11 +46,10 @@ def run_ensemble(config):
 
     run_scripts = []
     for s in seeds:
-        d_in = "{}/{}".format(model_input_dir, perturbed_model_input_dir.format(s))
-        d_out = "{}/{}".format(model_input_dir, perturbed_model_output_dir.format(s))
-        in_file_name = "{}/{}".format(model_run_dir, model_run_script_name.format(''))
-        out_file_name = "{}/{}".format(model_run_dir,
-                                       model_run_script_name.format("_seed_{}".format(s)))
+        d_in = perturbed_model_input_dir.format(seed=s)
+        d_out = perturbed_model_output_dir.format(seed=s)
+        in_file_name = model_run_script_name.format(mod='')
+        out_file_name = model_run_script_name.format(mod="_seed_{}".format(s))
 
         run_script = prepare_perturbed_run_script(in_file_name, out_file_name,
                                                   init_key, init_val, output_key, output_val, d_in, d_out)

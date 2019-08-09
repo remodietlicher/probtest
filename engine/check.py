@@ -23,13 +23,10 @@ def check_variable(diff_df, df_tol):
 def check(config):
     input_file_ref = config.get("input_file_ref")
     input_file_cur = config.get("input_file_cur")
-    model_output_dir = config.get("model_output_dir")
     tolerance_file_name = config.get("tolerance_file_name")
     check_variable_names = config.get("check_variable_names").split(",")
 
-    tf_path = "{}/{}".format(model_output_dir, tolerance_file_name)
-
-    df_tol = pd.read_csv(tf_path, index_col=False, dtype=dataframe_type_dict)
+    df_tol = pd.read_csv(tolerance_file_name, index_col=False, dtype=dataframe_type_dict)
     df_ref = pd.read_csv(input_file_ref, index_col=False, dtype=dataframe_type_dict)
     df_cur = pd.read_csv(input_file_cur, index_col=False, dtype=dataframe_type_dict)
 

@@ -55,21 +55,15 @@ def select_max_diff(diff_dataframes, check_variable_names):
 
 
 def tolerance(config):
-    model_output_dir = config.get("model_output_dir")
-    perturbed_model_output_dir = config.get("perturbed_model_output_dir")
     stats_file_name = config.get("stats_file_name")
     tolerance_file_name = config.get("tolerance_file_name")
     check_variable_names = config.get("check_variable_names").split(",")
     seeds = config.get("seeds").split(",")
     factor = config.getint("factor")
 
-    # look for directories with the model perturbed model input dir prefix
-    perturb_dirs = [perturbed_model_output_dir.format(s) for s in seeds]
-
     # read in stats files
-    dfs = [pd.read_csv("{}/{}/{}".format(model_output_dir, d, stats_file_name),
-                       sep=",", dtype=dataframe_type_dict, index_col=False)
-           for d in perturb_dirs]
+    dfs = [pd.read_csv(stats_file_name.format(seed=s), sep=",", dtype=dataframe_type_dict, index_col=False)
+           for s in seeds]
 
     ndata = len(dfs)
     # get all possible combinations of the input data
@@ -85,8 +79,7 @@ def tolerance(config):
     print("applying a factor of {} to the spread".format(factor))
     df_max[compute_statistics] = df_max[compute_statistics] * factor
 
-    path = "{}/{}".format(model_output_dir, tolerance_file_name)
-    print("writing tolerance file to {}.".format(path))
-    df_max.to_csv(path, index=False)
+    print("writing tolerance file to {}.".format(tolerance_file_name))
+    df_max.to_csv(tolerance_file_name, index=False)
 
     return

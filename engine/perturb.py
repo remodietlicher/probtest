@@ -5,7 +5,7 @@ import numpy as np
 
 def create_perturb_files(in_path, in_files, out_path, seed):
     path = os.path.abspath(in_path)
-    perturb_path = "{}/{}".format(path, out_path.format(seed))
+    perturb_path = out_path.format(seed=seed)
     if not os.path.exists(perturb_path):
         print("creating new directory: {}".format(perturb_path))
         os.mkdir(perturb_path)
