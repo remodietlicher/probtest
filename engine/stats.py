@@ -79,8 +79,12 @@ def stats(config):
     hor_dims = config.get("hor_dims").split(",")
     stats_file_name = config.get("stats_file_name")
 
-    input_dirs = ["{}/{}".format(base_dir, d)
-                  for d in file_names_from_regex(base_dir, dir_regex)]
+    if dir_regex:
+        input_dirs = ["{}/{}".format(base_dir, d)
+                      for d in file_names_from_regex(base_dir, dir_regex)]
+    else:
+        input_dirs = [base_dir]
+
     for input_dir in input_dirs:
         # load all model output data files matching the regex
         input_files = file_names_from_regex(input_dir, file_regex)
