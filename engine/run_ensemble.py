@@ -38,7 +38,7 @@ def run_ensemble(config):
     perturbed_model_output_dir = config.get("perturbed_model_output_dir")
     model_run_dir = config.get("model_run_dir")
     model_run_script_name = config.get("model_run_script_name")
-    run_location = config.get("run_location")
+    submit_command = config.get("submit_command")
     init_key, init_val = config.get("init_keyval").split(",")
     output_key, output_val = config.get("output_keyval").split(",")
     seeds = config.get("seeds").split(",")
@@ -53,14 +53,6 @@ def run_ensemble(config):
         run_script = prepare_perturbed_run_script(in_file_name, out_file_name,
                                                   init_key, init_val, output_key, output_val, d_in, d_out)
         run_scripts.append(os.path.basename(run_script))
-
-    if run_location == "local":
-        submit_command = "ksh"
-    elif run_location == "daint":
-        submit_command = "sbatch --wait --account=c15"
-    else:
-        print("The testing infrastructure is not set up for '{}' yet!".format(run_location))
-        return
 
     os.chdir(model_run_dir)
     for run_script in run_scripts:
