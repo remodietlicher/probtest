@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import itertools
+import sys
 
 from util.constants import dataframe_type_dict, compute_statistics
 
@@ -66,6 +67,9 @@ def tolerance(config):
            for s in seeds]
 
     ndata = len(dfs)
+    if ndata < 2:
+        print("not enough data to compute tolerance, got {} dataset. Abort.".format(ndata))
+        sys.exit(1)
     # get all possible combinations of the input data
     combs = list(itertools.product(range(ndata), range(ndata)))
 

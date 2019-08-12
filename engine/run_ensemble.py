@@ -23,7 +23,7 @@ def prepare_perturbed_run_script(in_file_name, out_file_name, init_key, ini_valu
         if (init_key in line) and (ini_value in line) and not line.strip().startswith("#"):
             line = "{}={}\n".format(init_key, perturbed_model_input_dir)
         elif (output_key in line) and (output_value in line) and not line.strip().startswith("#"):
-            line = "{}={}\n".format(output_key, output_value, perturbed_model_output_dir)
+            line = "{}={}\n".format(output_key, perturbed_model_output_dir)
         out_file.write(line)
 
     print("writing model run script to: {}".format(out_file_name))
@@ -42,8 +42,11 @@ def run_ensemble(config):
     init_key, init_val = config.get("init_keyval").split(",")
     output_key, output_val = config.get("output_keyval").split(",")
     seeds = config.get("seeds").split(",")
+    parallel = config.getboolean("parallel")
 
     run_scripts = []
+    os.chdir(model_run_dir)
+    procs = []
     for s in seeds:
         d_in = perturbed_model_input_dir.format(seed=s)
         d_out = perturbed_model_output_dir.format(seed=s)
@@ -52,12 +55,20 @@ def run_ensemble(config):
 
         run_script = prepare_perturbed_run_script(in_file_name, out_file_name,
                                                   init_key, init_val, output_key, output_val, d_in, d_out)
-        run_scripts.append(os.path.basename(run_script))
 
-    os.chdir(model_run_dir)
-    for run_script in run_scripts:
-        cmd_list = [submit_command, run_script]
+        run_script = os.path.basename(run_script)
+        if not os.path.exists(d_out):
+            print("creating perturbed model output directory {}".format(d_out))
+            os.makedirs(d_out)
+        cmd_list = submit_command.format(seed=s).split(" ") + [run_script]
         p = subprocess.Popen(cmd_list)
-        print("running the module with '{} {}'".format(*cmd_list))
-        p.communicate()
-        print("model finished!")
+        print("running the model with '{}'".format(" ".join(cmd_list)))
+        if not parallel:
+            p.communicate()
+        else:
+            procs.append(p)
+
+    if parallel:
+        for p in procs:
+            p.communicate()
+    print("model finished!")
