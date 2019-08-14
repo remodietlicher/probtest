@@ -2,6 +2,7 @@
 import argparse
 import os
 import subprocess
+import time
 
 
 def make_parser():
@@ -65,6 +66,7 @@ def run_ensemble(config):
         print("running the model with '{}'".format(" ".join(cmd_list)))
         if not parallel:
             p.communicate()
+            time.sleep(5)
         else:
             procs.append(p)
 
