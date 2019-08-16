@@ -60,8 +60,8 @@ class TestCheck(unittest.TestCase):
 
         df_diff = compute_max_rel_diff_dataframe(df_ref, df_cur, TEST_VARIABLES)
 
-        out1, err1 = check_variable(df_diff, df_tol1)
-        out2, err2 = check_variable(df_diff, df_tol2)
+        out1, err1, tol1 = check_variable(df_diff, df_tol1)
+        out2, err2, tol2 = check_variable(df_diff, df_tol2)
         self.assertTrue(out1, "Check with large tolerances did not validate! Here is the DataFrame:\n{}".format(err1))
         self.assertFalse(out2, "Check with small tolerances did validate! Here is the DataFrame:\n{}".format(err2))
 
