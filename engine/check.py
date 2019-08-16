@@ -18,7 +18,7 @@ def check_variable(diff_df, df_tol):
                (diff_tol_df["max"] > CHECK_THRESHOLD) | \
                (diff_tol_df["min"] > CHECK_THRESHOLD)
 
-    return len(diff_tol_df[selector].index) == 0, diff_df[selector]
+    return len(diff_tol_df[selector].index) == 0, diff_df[selector], df_tol[selector]
 
 
 def check(config):
@@ -35,12 +35,15 @@ def check(config):
 
     diff_df = compute_max_rel_diff_dataframe(df_ref, df_cur, check_variable_names)
 
-    out, err = check_variable(diff_df, df_tol)
+    out, err, tol = check_variable(diff_df, df_tol)
 
     if out:
         print("check PASSED!")
     else:
         print("check FAILED")
+        print("Differences")
         print(err)
+        print("Tolerance")
+        print(tol)
 
     return
