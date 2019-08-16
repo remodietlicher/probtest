@@ -51,7 +51,7 @@ def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor
     df = pd.DataFrame(frame)
 
     # sort the data by time
-    df.sort_values(by=["time", "height"], inplace=True)
+    df.sort_values(by=["name", "time", "height"], inplace=True)
     df.reset_index(inplace=True, drop=True)
 
     # add column with number of timestep (hacky hacky)
@@ -89,7 +89,7 @@ def stats(config):
     for input_dir in input_dirs:
         # load all model output data files matching the regex
         input_files = file_names_from_regex(input_dir, file_regex)
-        if(len(input_files) < 1):
+        if len(input_files) < 1:
             print("no files found in '{}' for regex '{}'".format(input_dir, file_regex))
             sys.exit(1)
 

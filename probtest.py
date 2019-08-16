@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 import argparse
 import configparser
-from util.constants import MODE_CHECK, MODE_PERTURB, MODE_STATS, MODE_TOLERANCE, MODE_RUN_ENSEMBLE
+from util.constants import MODE_CHECK, MODE_PERTURB, MODE_STATS, MODE_TOLERANCE, MODE_RUN_ENSEMBLE, MODE_VISUALIZE
 from engine.perturb import perturb
 from engine.stats import stats
 from engine.check import check
 from engine.tolerance import tolerance
 from engine.run_ensemble import run_ensemble
+from visualize.visualize import visualize
 import sys
 
 
@@ -38,9 +39,12 @@ def main(args):
             tolerance(config[MODE_TOLERANCE])
         elif m == MODE_RUN_ENSEMBLE:
             run_ensemble(config[MODE_RUN_ENSEMBLE])
+        elif m == MODE_VISUALIZE:
+            visualize(config)
         else:
             sys.exit("invalid mode '{}' selected. must be '{}', '{}', '{}', '{}' or '{}'"
-                     .format(mode, MODE_PERTURB, MODE_CHECK, MODE_STATS, MODE_TOLERANCE, MODE_RUN_ENSEMBLE))
+                     .format(mode, MODE_PERTURB, MODE_CHECK, MODE_STATS, MODE_TOLERANCE, MODE_RUN_ENSEMBLE,
+                             MODE_VISUALIZE))
 
 
 if __name__ == "__main__":

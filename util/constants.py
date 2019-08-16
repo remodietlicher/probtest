@@ -5,6 +5,7 @@ MODE_CHECK = 'check'
 MODE_STATS = 'stats'
 MODE_TOLERANCE = 'tolerance'
 MODE_RUN_ENSEMBLE = 'run'
+MODE_VISUALIZE = 'visualize'
 CHECK_THRESHOLD = 1e-15
 
 dataframe_type_dict = {"min": np.float64, "mean": np.float64, "max": np.float64, "ntime": np.int32,

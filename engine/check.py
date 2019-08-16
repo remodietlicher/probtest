@@ -1,6 +1,6 @@
 import pandas as pd
 from util.constants import dataframe_type_dict, compute_statistics, CHECK_THRESHOLD
-from engine.tolerance import compute_max_rel_diff_dataframe
+from util.dataframe_ops import compute_max_rel_diff_dataframe
 
 
 def check_variable(diff_df, df_tol):
@@ -11,13 +11,16 @@ def check_variable(diff_df, df_tol):
         else:
             # we want the real values for 'descriptive' columns
             diff_tol_df[c] = df_tol[c]
+        diff_tol_df[c][diff_tol_df[c].isnull()] = 1.0
+
+
 
     # TODO: figure out a way to do this with compute_statistics
     selector = (diff_tol_df["mean"] > CHECK_THRESHOLD) | \
                (diff_tol_df["max"] > CHECK_THRESHOLD) | \
                (diff_tol_df["min"] > CHECK_THRESHOLD)
 
-    return len(diff_tol_df[selector].index) == 0, diff_tol_df[selector]
+    return len(diff_tol_df[selector].index) == 0, diff_df[selector]
 
 
 def check(config):
