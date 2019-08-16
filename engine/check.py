@@ -11,9 +11,7 @@ def check_variable(diff_df, df_tol):
         else:
             # we want the real values for 'descriptive' columns
             diff_tol_df[c] = df_tol[c]
-        diff_tol_df[c][diff_tol_df[c].isnull()] = 1.0
-
-
+        diff_tol_df.loc[diff_tol_df[c].isnull(), c] = 1.0
 
     # TODO: figure out a way to do this with compute_statistics
     selector = (diff_tol_df["mean"] > CHECK_THRESHOLD) | \
