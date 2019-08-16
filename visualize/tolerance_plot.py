@@ -14,6 +14,7 @@ def tolerance_plot(config):
     tolerance_file_name = config[MODE_TOLERANCE].get('tolerance_file_name')
     check_variable_names = config['DEFAULT'].get('check_variable_names').split(",")
     amplitude = config[MODE_PERTURB].getfloat('amplitude')
+    savedir = config[MODE_VISUALIZE].get("savedir")
 
     tol_df = pd.read_csv(tolerance_file_name)
 
@@ -37,6 +38,11 @@ def tolerance_plot(config):
     ax[1].set_xlabel("timestep")
 
     fig.tight_layout()
-    plt.show()
+    if savedir:
+        path = '{}/{}'.format(savedir, 'tolerance_plot.pdf')
+        print("saving figure to {}".format(path))
+        fig.savefig(path)
+    else:
+        plt.show()
 
     return

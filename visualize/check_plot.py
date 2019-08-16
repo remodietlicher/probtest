@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-from util.constants import compute_statistics, MODE_TOLERANCE, MODE_CHECK
+from util.constants import compute_statistics, MODE_TOLERANCE, MODE_CHECK, MODE_VISUALIZE
 from engine.tolerance import compute_max_rel_diff_dataframe
 import numpy as np
 
@@ -13,6 +13,7 @@ def check_plot(config):
     check_variable_names = config['DEFAULT'].get('check_variable_names').split(",")
     input_file_ref = config[MODE_CHECK].get('input_file_ref')
     input_file_cur = config[MODE_CHECK].get('input_file_cur')
+    savedir = config[MODE_VISUALIZE].get("savedir")
 
     tol_df = pd.read_csv(tolerance_file_name)
     ref_df = pd.read_csv(input_file_ref)
@@ -20,11 +21,9 @@ def check_plot(config):
     diff_df = compute_max_rel_diff_dataframe(ref_df, cur_df, check_variable_names)
 
     nrows = len(check_variable_names) // 3 + 1
-    print(len(check_variable_names), nrows)
     fig, ax = plt.subplots(ncols=3, nrows=nrows, figsize=(16, 9), sharey=True, sharex=True)
     if nrows == 1:
         ax = np.expand_dims(ax, axis=1)
-    print(ax.shape)
 
     for i, vn in enumerate(check_variable_names):
         tol = tol_df[tol_df['name'] == vn]
@@ -43,6 +42,11 @@ def check_plot(config):
             ax[i // 3, 0].set_ylabel("relative error")
 
     fig.tight_layout()
-    plt.show()
+    if savedir:
+        path = '{}/{}'.format(savedir, 'check_plot.pdf')
+        print("saving figure to {}".format(path))
+        fig.savefig(path)
+    else:
+        plt.show()
 
     return
