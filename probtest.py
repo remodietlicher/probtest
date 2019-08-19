@@ -29,17 +29,20 @@ def make_parser():
     return parser.parse_args()
 
 
-def make_default_dict_from_parser(args):
+def parse_configs(args):
     default_dict = vars(args)
     default_dict = {key: val for key, val in default_dict.items() if key not in ['config', 'mode'] and val}
-    return default_dict
+    check_dict = {key: val for key, val in default_dict.items() if key in ['input_file_ref', 'input_file_cur'] and val}
+    config = configparser.ConfigParser()
+    config.read(args.config)
+    config['DEFAULT'].update(default_dict)
+    config['check'].update(check_dict)
+
+    return config
 
 
 def main(args):
-    default_dict = make_default_dict_from_parser(args)
-
-    config = configparser.ConfigParser(defaults=default_dict)
-    config.read(args.config)
+    config = parse_configs(args)
 
     mode = args.mode
     for m in mode:
