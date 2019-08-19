@@ -12,3 +12,6 @@ dataframe_type_dict = {"min": np.float64, "mean": np.float64, "max": np.float64,
                        "time": np.float64, "height": np.float64, "name": str}
 
 compute_statistics = ["max", "min", "mean"]
+
+perturbed_model_output_dir = 'perturbed_output_{seed}'
+perturbed_model_input_dir = 'perturbed_input_{seed}'

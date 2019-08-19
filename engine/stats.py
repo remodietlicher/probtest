@@ -1,12 +1,10 @@
-import re
-import os
 from netCDF4 import Dataset
 import numpy as np
 import pandas as pd
 import sys
 
 from util.file_system import file_names_from_regex
-from util.constants import dataframe_type_dict
+from util.constants import dataframe_type_dict, perturbed_model_output_dir
 
 
 def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims):
@@ -70,21 +68,19 @@ def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor
 
 def stats(config):
     file_regex = config.get("file_regex")
-    dir_regex = config.get("dir_regex")
-    base_dir = config.get("base_dir")
-    if not base_dir:
-        base_dir = ''
+    model_output_dir = config.get("model_output_dir")
+    seeds = config.get("seeds").split(",")
+    ensemble = config.get("ensemble")
     check_variable_names = config.get("check_variable_names").split(",")
     time_dim = config.get("time_dim")
     height_dim = config.get("height_dim")
     hor_dims = config.get("hor_dims").split(",")
     stats_file_name = config.get("stats_file_name")
 
-    if dir_regex:
-        input_dirs = ["{}/{}".format(base_dir, d)
-                      for d in file_names_from_regex(base_dir, dir_regex)]
+    if ensemble:
+        input_dirs = ["{}/{}".format(model_output_dir, perturbed_model_output_dir.format(seed=s)) for s in seeds]
     else:
-        input_dirs = [base_dir]
+        input_dirs = [model_output_dir]
 
     for input_dir in input_dirs:
         # load all model output data files matching the regex
@@ -97,7 +93,7 @@ def stats(config):
 
         df = create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims)
 
-        path = "{}/{}".format(input_dir, os.path.basename(stats_file_name))
+        path = "{}/{}".format(input_dir, stats_file_name)
         print("writing stats file to {}.".format(path))
         df.to_csv(path_or_buf=path, sep=",", index=False)
 

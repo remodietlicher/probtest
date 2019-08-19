@@ -32,14 +32,13 @@ def make_parser():
 def make_default_dict_from_parser(args):
     default_dict = vars(args)
     default_dict = {key: val for key, val in default_dict.items() if key not in ['config', 'mode'] and val}
-    print(default_dict)
     return default_dict
 
 
 def main(args):
     default_dict = make_default_dict_from_parser(args)
 
-    config = configparser.ConfigParser(interpolation=configparser.ExtendedInterpolation(), defaults=default_dict)
+    config = configparser.ConfigParser(defaults=default_dict)
     config.read(args.config)
 
     mode = args.mode

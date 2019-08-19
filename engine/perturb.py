@@ -2,6 +2,8 @@ import os
 from util.netcdf_io import nc4_get_copy
 import numpy as np
 
+from util.constants import perturbed_model_input_dir
+
 
 def create_perturb_files(in_path, in_files, out_path, seed):
     path = os.path.abspath(in_path)
@@ -25,17 +27,17 @@ def perturb_array(array, s, a):
 
 def perturb(config):
     model_input_dir = config.get("model_input_dir")
+    model_output_dir = config.get("model_output_dir")
     files = config.get("files")
     seeds = np.array(config.get("seeds").split(",")).astype(int)
     variable_names = config.get("variable_names").split(",")
     amplitude = config.getfloat("amplitude")
-    perturbed_model_input_dir = config.get("perturbed_model_input_dir")
+
+    perturb_file_name = "{}/{}".format(model_output_dir, perturbed_model_input_dir)
 
     for s in seeds:
-        data = create_perturb_files(model_input_dir, files, perturbed_model_input_dir, s)
+        data = create_perturb_files(model_input_dir, files, perturb_file_name, s)
         for d in data:
             for vn in variable_names:
                 d.variables[vn][:] = perturb_array(d.variables[vn][:], s, amplitude)
-
-    for d in data:
-        d.close()
+            d.close()
