@@ -70,7 +70,7 @@ def stats(config):
     file_regex = config.get("file_regex")
     model_output_dir = config.get("model_output_dir")
     seeds = config.get("seeds").split(",")
-    ensemble = config.get("ensemble")
+    ensemble = config.getboolean("ensemble")
     check_variable_names = config.get("check_variable_names").split(",")
     time_dim = config.get("time_dim")
     height_dim = config.get("height_dim")
