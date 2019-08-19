@@ -10,7 +10,7 @@ def create_perturb_files(in_path, in_files, out_path, seed):
     perturb_path = out_path.format(seed=seed)
     if not os.path.exists(perturb_path):
         print("creating new directory: {}".format(perturb_path))
-        os.mkdir(perturb_path)
+        os.makedirs(perturb_path)
     data = [nc4_get_copy("{}/{}".format(path, f), "{}/{}".format(perturb_path, f))
             for f in in_files.split(",")]
 
