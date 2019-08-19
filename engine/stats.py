@@ -69,7 +69,6 @@ def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor
 def stats(config):
     file_regex = config.get("file_regex")
     model_output_dir = config.get("model_output_dir")
-    seeds = config.get("seeds").split(",")
     ensemble = config.getboolean("ensemble")
     check_variable_names = config.get("check_variable_names").split(",")
     time_dim = config.get("time_dim")
@@ -78,6 +77,7 @@ def stats(config):
     stats_file_name = config.get("stats_file_name")
 
     if ensemble:
+        seeds = config.get("seeds").split(",")
         input_dirs = ["{}/{}".format(model_output_dir, perturbed_model_output_dir.format(seed=s)) for s in seeds]
     else:
         input_dirs = [model_output_dir]
