@@ -37,7 +37,7 @@ def check(config):
 
     out, err, tol = check_variable(diff_df, df_tol)
 
-    div = compute_div_dataframe(diff_df, df_tol)
+    div = compute_div_dataframe(err, tol)
 
     if out:
         print("RESULT: check PASSED!")
