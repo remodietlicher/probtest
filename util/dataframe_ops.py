@@ -37,6 +37,16 @@ def compute_max_rel_diff_dataframe(dataframe_ref, dataframe_cur, check_variable_
     return df_max
 
 
+def compute_div_dataframe(df1, df2):
+    out = df1.copy()
+    for c in df1.columns.values:
+        if c in compute_statistics:
+            out[c] = df1[c] / df2[c]
+        else:
+            out[c] = df1[c]
+    return out
+
+
 def select_max_diff(diff_dataframes, check_variable_names):
     # concatenate the dataframes for each perturbed model run
     concat = pd.concat(diff_dataframes, axis=0, ignore_index=True)

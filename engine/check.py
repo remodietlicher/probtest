@@ -1,6 +1,6 @@
 import pandas as pd
 from util.constants import dataframe_type_dict, compute_statistics, CHECK_THRESHOLD
-from util.dataframe_ops import compute_max_rel_diff_dataframe
+from util.dataframe_ops import compute_max_rel_diff_dataframe, compute_div_dataframe
 
 
 def check_variable(diff_df, df_tol):
@@ -27,18 +27,17 @@ def check(config):
     tolerance_file_name = config.get("tolerance_file_name")
     check_variable_names = config.get("check_variable_names").split(",")
 
-    try:
-        df_tol = pd.read_csv(tolerance_file_name, index_col=False, dtype=dataframe_type_dict)
-        df_ref = pd.read_csv(input_file_ref, index_col=False, dtype=dataframe_type_dict)
-        df_cur = pd.read_csv(input_file_cur, index_col=False, dtype=dataframe_type_dict)
-    except:
-        print("RESULT: CRASH, reading the input for tolerance failed")
+    df_tol = pd.read_csv(tolerance_file_name, index_col=False, dtype=dataframe_type_dict)
+    df_ref = pd.read_csv(input_file_ref, index_col=False, dtype=dataframe_type_dict)
+    df_cur = pd.read_csv(input_file_cur, index_col=False, dtype=dataframe_type_dict)
 
     print("checking {} against {}".format(input_file_cur, input_file_ref))
 
     diff_df = compute_max_rel_diff_dataframe(df_ref, df_cur, check_variable_names)
 
     out, err, tol = check_variable(diff_df, df_tol)
+
+    div = compute_div_dataframe(diff_df, df_tol)
 
     if out:
         print("RESULT: check PASSED!")
@@ -48,5 +47,7 @@ def check(config):
         print(err)
         print("Tolerance")
         print(tol)
+        print("Error relative to tolerance")
+        print(div)
 
     return
