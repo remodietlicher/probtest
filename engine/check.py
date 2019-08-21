@@ -27,9 +27,12 @@ def check(config):
     tolerance_file_name = config.get("tolerance_file_name")
     check_variable_names = config.get("check_variable_names").split(",")
 
-    df_tol = pd.read_csv(tolerance_file_name, index_col=False, dtype=dataframe_type_dict)
-    df_ref = pd.read_csv(input_file_ref, index_col=False, dtype=dataframe_type_dict)
-    df_cur = pd.read_csv(input_file_cur, index_col=False, dtype=dataframe_type_dict)
+    try:
+        df_tol = pd.read_csv(tolerance_file_name, index_col=False, dtype=dataframe_type_dict)
+        df_ref = pd.read_csv(input_file_ref, index_col=False, dtype=dataframe_type_dict)
+        df_cur = pd.read_csv(input_file_cur, index_col=False, dtype=dataframe_type_dict)
+    except:
+        print("RESULT: CRASH, reading the input for tolerance failed")
 
     print("checking {} against {}".format(input_file_cur, input_file_ref))
 
@@ -38,9 +41,9 @@ def check(config):
     out, err, tol = check_variable(diff_df, df_tol)
 
     if out:
-        print("check PASSED!")
+        print("RESULT: check PASSED!")
     else:
-        print("check FAILED")
+        print("RESULT: check FAILED")
         print("Differences")
         print(err)
         print("Tolerance")

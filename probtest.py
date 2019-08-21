@@ -22,27 +22,40 @@ def make_parser():
     parser.add_argument('-i', dest='model_input_dir', type=str, help='the model input directory')
     parser.add_argument('-o', dest='model_output_dir', type=str, help='the model output directory')
     parser.add_argument('-t', dest='tolerance_file_name', type=str, help='the full path to the tolerance file')
+    parser.add_argument('-r', dest='model_run_dir', type=str, help='the path to where to model is launched from')
+
     parser.add_argument('--ref', dest='input_file_ref', type=str, help='check: the path to the reference file')
     parser.add_argument('--cur', dest='input_file_cur', type=str, help='check: the path to the current file')
-    parser.add_argument('-r', dest='model_run_dir', type=str, help='the path to where to model is launched from')
+
+    # parser.add_argument('--ens', dest='ensemble', help='stats: run stats in ensemble mode',
+    #                    action='store_true')
+    parser.add_argument('-f', dest='file_regex', type=str, help='stats: a regex for the stats input files')
 
     return parser.parse_args()
 
 
 def parse_configs(args):
     default_dict = vars(args)
-    default_dict = {key: val for key, val in default_dict.items() if key not in ['config', 'mode'] and val}
-    check_dict = {key: val for key, val in default_dict.items() if key in ['input_file_ref', 'input_file_cur'] and val}
+    default_dict = {key: val for key, val in default_dict.items()
+                    if key not in ['config', 'mode'] and val}
+    check_dict = {key: val for key, val in default_dict.items()
+                  if key in ['input_file_ref', 'input_file_cur'] and val}
+    stats_dict = {key: val for key, val in default_dict.items()
+                  if key in ['ensemble', 'file_regex'] and not (val is None)}
+
     config = configparser.ConfigParser()
     config.read(args.config)
     config['DEFAULT'].update(default_dict)
     config['check'].update(check_dict)
+    config['stats'].update(stats_dict)
 
     return config
 
 
 def main(args):
     config = parse_configs(args)
+
+    print(config['stats'].get('ensemble'))
 
     mode = args.mode
     for m in mode:
