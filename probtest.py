@@ -55,8 +55,6 @@ def parse_configs(args):
 def main(args):
     config = parse_configs(args)
 
-    print(config['stats'].get('ensemble'))
-
     mode = args.mode
     for m in mode:
         if m == MODE_STATS:
