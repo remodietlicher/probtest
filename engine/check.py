@@ -1,6 +1,6 @@
 import pandas as pd
 from util.constants import dataframe_type_dict, compute_statistics, CHECK_THRESHOLD
-from util.dataframe_ops import compute_max_rel_diff_dataframe, compute_div_dataframe
+from util.dataframe_ops import compute_max_rel_diff_dataframe, compute_div_dataframe, pretty_print
 
 
 def check_variable(diff_df, df_tol):
@@ -44,10 +44,10 @@ def check(config):
     else:
         print("RESULT: check FAILED")
         print("Differences")
-        print(err)
+        pretty_print(err)
         print("Tolerance")
-        print(tol)
+        pretty_print(tol)
         print("Error relative to tolerance")
-        print(div)
+        pretty_print(div)
 
     return

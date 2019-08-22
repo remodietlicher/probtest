@@ -4,6 +4,9 @@ import pandas as pd
 
 from util.constants import compute_statistics
 
+pd.set_option('display.max_colwidth', -1)
+pd.set_option('display.max_columns', None)
+
 
 def get_time_var_selector(dataframe, check_variable_names):
     # construct product of timesteps and check_variable_names
@@ -28,6 +31,8 @@ def compute_max_rel_diff_dataframe(dataframe_ref, dataframe_cur, check_variable_
     selector = get_time_var_selector(diff_df, check_variable_names)
 
     # construct new dataframe with max differences for each timestep
+    # NOTE: at this point, the information about the levels is lost as min, max and mean can have largest differences on
+    #       different levels
     df_max = pd.concat([diff_df[s].max() for s in selector], axis=1).T
 
     # sort dataframe by name
@@ -45,6 +50,14 @@ def compute_div_dataframe(df1, df2):
         else:
             out[c] = df1[c]
     return out
+
+
+def pretty_print(df):
+    fmt = {c: '{:.4e}'.format for c in compute_statistics}
+    fmt['time'] = '{:.5f}'.format
+    fmt['ntime'] = '{:d}'.format
+
+    print(df.to_string(formatters=fmt, index=False))
 
 
 def select_max_diff(diff_dataframes, check_variable_names):
