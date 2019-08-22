@@ -11,6 +11,17 @@ from visualize.visualize import visualize
 import sys
 
 
+def str2bool(v):
+    if isinstance(v, bool):
+        return v
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+
 def make_parser():
     description = """
     TODO: add full description
@@ -27,8 +38,7 @@ def make_parser():
     parser.add_argument('--ref', dest='input_file_ref', type=str, help='check: the path to the reference file')
     parser.add_argument('--cur', dest='input_file_cur', type=str, help='check: the path to the current file')
 
-    # parser.add_argument('--ens', dest='ensemble', help='stats: run stats in ensemble mode',
-    #                    action='store_true')
+    parser.add_argument('--ens', dest='ensemble', type=str2bool, help='stats: run stats in ensemble mode')
     parser.add_argument('-f', dest='file_regex', type=str, help='stats: a regex for the stats input files')
 
     return parser.parse_args()
@@ -36,11 +46,11 @@ def make_parser():
 
 def parse_configs(args):
     default_dict = vars(args)
-    default_dict = {key: val for key, val in default_dict.items()
+    default_dict = {key: str(val) for key, val in default_dict.items()
                     if key not in ['config', 'mode'] and val}
-    check_dict = {key: val for key, val in default_dict.items()
+    check_dict = {key: str(val) for key, val in default_dict.items()
                   if key in ['input_file_ref', 'input_file_cur'] and val}
-    stats_dict = {key: val for key, val in default_dict.items()
+    stats_dict = {key: str(val) for key, val in default_dict.items()
                   if key in ['ensemble', 'file_regex'] and not (val is None)}
 
     config = configparser.ConfigParser()
@@ -54,6 +64,8 @@ def parse_configs(args):
 
 def main(args):
     config = parse_configs(args)
+
+    print(config['stats'].getboolean('ensemble'))
 
     mode = args.mode
     for m in mode:
