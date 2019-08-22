@@ -45,10 +45,10 @@ def run_ensemble(config):
         d_in = "{}/{}".format(model_output_dir, perturbed_model_input_dir.format(seed=s))
         in_file_name = "{}/{}".format(model_run_dir, model_run_script_name.format(mod=''))
         out_file_name = "{}/{}".format(model_run_dir, model_run_script_name.format(mod=seed_extension))
-        new_exp = new_exp.format(mod=seed_extension)
+        seed_exp = new_exp.format(mod=seed_extension)
 
         run_script = prepare_perturbed_run_script(in_file_name, out_file_name,
-                                                  init_key, init_val, d_in, old_exp, new_exp)
+                                                  init_key, init_val, d_in, old_exp, seed_exp)
 
         run_script = os.path.basename(run_script)
         cmd_list = submit_command.format(seed=s).split(" ") + [run_script]
