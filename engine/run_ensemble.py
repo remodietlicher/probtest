@@ -16,7 +16,7 @@ def prepare_perturbed_run_script(in_file_name, out_file_name, init_key, init_val
         if (init_key in line) and (init_value in line) and not line.strip().startswith("#"):
             line = "{}={}\n".format(init_key, d_in)
         # rename the experiment name
-        elif old_exp in line and not line.strip().startswith("#"):
+        elif old_exp in line:
             line = re.sub(old_exp, new_exp, line)
         out_file.write(line)
 
