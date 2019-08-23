@@ -88,7 +88,7 @@ def stats(config):
         # load all model output data files matching the regex
         input_files = file_names_from_regex(input_dir, file_regex.format(exp=exp))
         if len(input_files) < 1:
-            print("no files found in '{}' for regex '{}'".format(input_dir, file_regex))
+            print("no files found in '{}' for regex '{}'".format(input_dir, file_regex.format(exp=exp)))
             sys.exit(1)
 
         data = [Dataset("{}/{}".format(input_dir, f), 'r') for f in input_files]
