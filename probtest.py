@@ -30,14 +30,19 @@ def make_parser():
     parser.add_argument('config', metavar='config.cfg', type=str, help='The configuration file')
     parser.add_argument('mode', metavar='mode', type=str, nargs='*',
                         help='The mode to be run in')
+
+    # DEFAULT arguments
     parser.add_argument('-i', dest='model_input_dir', type=str, help='the model input directory')
     parser.add_argument('-o', dest='model_output_dir', type=str, help='the model output directory')
     parser.add_argument('-t', dest='tolerance_file_name', type=str, help='the full path to the tolerance file')
     parser.add_argument('-r', dest='model_run_dir', type=str, help='the path to where to model is launched from')
+    parser.add_argument('-e', dest='experiment_name', type=str, help='name of the experiment')
 
+    # check arguments
     parser.add_argument('--ref', dest='input_file_ref', type=str, help='check: the path to the reference file')
     parser.add_argument('--cur', dest='input_file_cur', type=str, help='check: the path to the current file')
 
+    # stats arguments
     parser.add_argument('--ens', dest='ensemble', type=str2bool, help='stats: run stats in ensemble mode')
     parser.add_argument('-f', dest='file_regex', type=str, help='stats: a regex for the stats input files')
 

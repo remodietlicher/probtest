@@ -1,9 +1,8 @@
 import pandas as pd
-import numpy as np
 import itertools
 import sys
 
-from util.constants import dataframe_type_dict, compute_statistics, perturbed_model_output_dir
+from util.constants import dataframe_type_dict, compute_statistics, exp_modifier
 from util.dataframe_ops import compute_max_rel_diff_dataframe, select_max_diff
 
 
@@ -11,12 +10,13 @@ def tolerance(config):
     stats_file_name = config.get("stats_file_name")
     tolerance_file_name = config.get("tolerance_file_name")
     model_output_dir = config.get("model_output_dir")
+    experiment_name = config.get("experiment_name")
     check_variable_names = config.get("check_variable_names").split(",")
     seeds = config.get("seeds").split(",")
     factor = config.getint("factor")
 
-    # perturbed_model_output_dir has a {seed} variable to be set
-    stats_file_path = '{}/{}/{}'.format(model_output_dir, perturbed_model_output_dir, stats_file_name)
+    # exp_modifier has a {seed} variable to be set
+    stats_file_path = '{}/{}/{}'.format(model_output_dir, experiment_name + exp_modifier, stats_file_name)
 
     # read in stats files
     dfs = [pd.read_csv(stats_file_path.format(seed=s), sep=",", dtype=dataframe_type_dict, index_col=False)

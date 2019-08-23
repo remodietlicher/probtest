@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 
 from util.file_system import file_names_from_regex
-from util.constants import dataframe_type_dict, perturbed_model_output_dir
+from util.constants import dataframe_type_dict, perturbed_model_input_subdir, exp_modifier
 
 
 def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims):
@@ -67,8 +67,9 @@ def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor
 
 
 def stats(config):
-    file_regex = config.get("file_regex")
     model_output_dir = config.get("model_output_dir")
+    experiment_name = config.get("experiment_name")
+    file_regex = config.get("file_regex")
     ensemble = config.getboolean("ensemble")
     check_variable_names = config.get("check_variable_names").split(",")
     time_dim = config.get("time_dim")
@@ -78,13 +79,14 @@ def stats(config):
 
     if ensemble:
         seeds = config.get("seeds").split(",")
-        input_dirs = ["{}/{}".format(model_output_dir, perturbed_model_output_dir.format(seed=s)) for s in seeds]
+        experiments = [experiment_name + exp_modifier.format(seed=s) for s in seeds]
     else:
-        input_dirs = [model_output_dir]
+        experiments = [experiment_name]
 
-    for input_dir in input_dirs:
+    for exp in experiments:
+        input_dir = "{}/{}".format(model_output_dir, exp)
         # load all model output data files matching the regex
-        input_files = file_names_from_regex(input_dir, file_regex)
+        input_files = file_names_from_regex(input_dir, file_regex.format(exp=exp))
         if len(input_files) < 1:
             print("no files found in '{}' for regex '{}'".format(input_dir, file_regex))
             sys.exit(1)

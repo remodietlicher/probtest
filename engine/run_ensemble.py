@@ -3,37 +3,37 @@ import subprocess
 import time
 import re
 
-from util.constants import perturbed_model_input_dir, perturbed_model_output_dir
+from util.constants import exp_modifier, perturbed_model_input_subdir
 
 
-def prepare_perturbed_run_script(in_file_name, out_file_name, init_key, init_value,
-                                 d_in, old_exp, new_exp):
-    in_file = open(in_file_name, 'r')
-    out_file = open(out_file_name, 'w')
+def prepare_perturbed_run_script(runscript, modified_runscript, init_key, init_value,
+                                 perturbed_model_input_dir, experiment_name, modified_experiment_name):
+    in_file = open(runscript, 'r')
+    out_file = open(modified_runscript, 'w')
 
     for line in in_file:
         # replace input directory with the one given in config file
         if (init_key in line) and (init_value in line) and not line.strip().startswith("#"):
-            line = "{}={}\n".format(init_key, d_in)
+            line = "{}={}\n".format(init_key, perturbed_model_input_dir)
         # rename the experiment name
-        elif old_exp in line:
-            line = re.sub(old_exp, new_exp, line)
+        elif experiment_name in line:
+            line = re.sub(experiment_name, modified_experiment_name, line)
         out_file.write(line)
 
-    print("writing model run script to: {}".format(out_file_name))
+    print("writing model run script to: {}".format(modified_runscript))
     out_file.close()
     in_file.close()
 
-    return out_file_name
+    return
 
 
 def run_ensemble(config):
     model_run_dir = config.get("model_run_dir")
     model_run_script_name = config.get("model_run_script_name")
     model_output_dir = config.get("model_output_dir")
+    experiment_name = config.get("experiment_name")
     submit_command = config.get("submit_command")
     init_key, init_val = config.get("init_keyval").split(",")
-    old_exp, new_exp = config.get("rename_exp").split(",")
     seeds = config.get("seeds").split(",")
     parallel = config.getboolean("parallel")
     dry = config.getboolean("dry")
@@ -41,17 +41,17 @@ def run_ensemble(config):
     os.chdir(model_run_dir)
     procs = []
     for s in seeds:
-        seed_extension = "_seed_{}".format(s)
-        d_in = "{}/{}".format(model_output_dir, perturbed_model_input_dir.format(seed=s))
-        in_file_name = "{}/{}".format(model_run_dir, model_run_script_name.format(mod=''))
-        out_file_name = "{}/{}".format(model_run_dir, model_run_script_name.format(mod=seed_extension))
-        seed_exp = new_exp.format(mod=seed_extension)
+        modified_experiment_name = experiment_name + exp_modifier.format(seed=s)
+        perturbed_model_input_dir = "{}/{}/{}".format(model_output_dir, modified_experiment_name,
+                                                      perturbed_model_input_subdir)
+        runscript = "{}/{}".format(model_run_dir, model_run_script_name.format(exp=experiment_name))
+        modified_runscript = "{}/{}".format(model_run_dir, model_run_script_name.format(exp=modified_experiment_name))
 
-        run_script = prepare_perturbed_run_script(in_file_name, out_file_name,
-                                                  init_key, init_val, d_in, old_exp, seed_exp)
+        prepare_perturbed_run_script(runscript, modified_runscript,
+                                     init_key, init_val, perturbed_model_input_dir,
+                                     experiment_name, modified_experiment_name)
 
-        run_script = os.path.basename(run_script)
-        cmd_list = submit_command.format(seed=s).split(" ") + [run_script]
+        cmd_list = submit_command.format(seed=s).split(" ") + [os.path.basename(modified_runscript)]
         if not dry:
             p = subprocess.Popen(cmd_list)
         print("running the model with '{}'".format(" ".join(cmd_list)))
