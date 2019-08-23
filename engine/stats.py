@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 
 from util.file_system import file_names_from_regex
-from util.constants import dataframe_type_dict, perturbed_model_input_subdir, exp_modifier
+from util.constants import dataframe_type_dict, exp_modifier
 
 
 def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims):
