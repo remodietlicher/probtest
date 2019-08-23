@@ -46,7 +46,7 @@ def compute_div_dataframe(df1, df2):
     out = df1.copy()
     for c in df1.columns.values:
         if c in compute_statistics:
-            out[c] = df1[c] / df2[c]
+            out[c] = df1[c] / df2[c].replace({0: np.nan})
         else:
             out[c] = df1[c]
     return out
@@ -54,10 +54,9 @@ def compute_div_dataframe(df1, df2):
 
 def pretty_print(df):
     fmt = {c: '{:.4e}'.format for c in compute_statistics}
-    fmt['time'] = '{:.5f}'.format
     fmt['ntime'] = '{:d}'.format
 
-    print(df.to_string(formatters=fmt, index=False))
+    print(df.drop("time", axis=1).replace({np.nan: 0}).to_string(formatters=fmt, index=False))
 
 
 def select_max_diff(diff_dataframes, check_variable_names):
