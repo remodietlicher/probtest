@@ -50,13 +50,17 @@ def make_parser():
 
 
 def parse_configs(args):
-    default_dict = vars(args)
-    default_dict = {key: str(val) for key, val in default_dict.items()
-                    if key not in ['config', 'mode'] and val}
-    check_dict = {key: str(val) for key, val in default_dict.items()
-                  if key in ['input_file_ref', 'input_file_cur'] and val}
-    stats_dict = {key: str(val) for key, val in default_dict.items()
+    args_vars = vars(args)
+    default_dict = {key: str(val) for key, val in args_vars.items()
+                    if key not in ['config', 'mode'] and not (val is None)}
+    check_dict = {key: str(val) for key, val in args_vars.items()
+                  if key in ['input_file_ref', 'input_file_cur'] and not (val is None)}
+    stats_dict = {key: str(val) for key, val in args_vars.items()
                   if key in ['ensemble', 'file_regex'] and not (val is None)}
+
+    print(default_dict)
+    print(stats_dict)
+    print(check_dict)
 
     config = configparser.ConfigParser()
     config.read(args.config)
@@ -69,6 +73,9 @@ def parse_configs(args):
 
 def main(args):
     config = parse_configs(args)
+
+    print(config['DEFAULT'].get('ensemble'))
+    print(config['stats'].get('ensemble'))
 
     mode = args.mode
     for m in mode:
