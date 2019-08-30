@@ -58,10 +58,6 @@ def parse_configs(args):
     stats_dict = {key: str(val) for key, val in args_vars.items()
                   if key in ['ensemble', 'file_regex'] and not (val is None)}
 
-    print(default_dict)
-    print(stats_dict)
-    print(check_dict)
-
     config = configparser.ConfigParser()
     config.read(args.config)
     config['DEFAULT'].update(default_dict)
@@ -73,9 +69,6 @@ def parse_configs(args):
 
 def main(args):
     config = parse_configs(args)
-
-    print(config['DEFAULT'].get('ensemble'))
-    print(config['stats'].get('ensemble'))
 
     mode = args.mode
     for m in mode:
