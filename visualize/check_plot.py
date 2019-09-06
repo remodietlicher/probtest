@@ -21,7 +21,7 @@ def check_plot(config):
     diff_df = compute_max_rel_diff_dataframe(ref_df, cur_df, check_variable_names)
 
     nrows = int(np.ceil(len(check_variable_names) / 3.0))
-    fig, ax = plt.subplots(ncols=3, nrows=nrows, figsize=(16, 9), sharey=True, sharex=True)
+    fig, ax = plt.subplots(ncols=3, nrows=nrows, figsize=(16, 3*nrows), sharey=True, sharex=True)
     if nrows == 1:
         ax = np.expand_dims(ax, axis=0)
 
@@ -30,7 +30,7 @@ def check_plot(config):
         diff = diff_df[diff_df['name'] == vn]
         for j, c in enumerate(compute_statistics):
             ax[i // 3, i % 3].semilogy(tol['ntime'].values, tol[c].values, label='{} {}'.format(vn, c),
-                                              c=colors[j])
+                                       c=colors[j])
             ax[i // 3, i % 3].semilogy(diff['ntime'].values, diff[c].values, label='{} {}'.format(vn, c), ls='--',
                                        c=colors[j])
             ax[i // 3, i % 3].legend()
