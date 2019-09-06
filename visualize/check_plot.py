@@ -20,7 +20,7 @@ def check_plot(config):
     cur_df = pd.read_csv(input_file_cur)
     diff_df = compute_max_rel_diff_dataframe(ref_df, cur_df, check_variable_names)
 
-    nrows = np.ceil(len(check_variable_names) / 3.0)
+    nrows = int(np.ceil(len(check_variable_names) / 3.0))
     fig, ax = plt.subplots(ncols=3, nrows=nrows, figsize=(16, 9), sharey=True, sharex=True)
     if nrows == 1:
         ax = np.expand_dims(ax, axis=1)
