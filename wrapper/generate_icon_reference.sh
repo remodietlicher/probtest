@@ -96,7 +96,7 @@ plots = check,tolerance
 savedir = ${ICON_DIR}/experiments/${EXP}
 EOF
 
-python probtest/probtest.py config.cfg perturb run stats tolerance check visualize
+python probtest/probtest.py config.cfg perturb run stats tolerance check
 
 echo copying reference from ${ICON_DIR}/experiments/${EXP}/statistics.csv to ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
 cp ${ICON_DIR}/experiments/${EXP}/statistics.csv ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
