@@ -1,16 +1,16 @@
 #!/bin/bash
 
 # Compiler and Experiment
-COMPILER=pgi
-EXP=atm_amip_tolerance_test
+COMPILER=$1
+EXP=$2
 
 # Parent directory of ICON
-ICON_DIR=/home/remo/mch/model/icon/icon_gpu
+ICON_DIR=$(pwd)
 # Directory where the tolerance and reference files should be stored
-REFERENCE_DIR=/home/remo/mch/model/icon/icon-test-references
+REFERENCE_DIR=${ICON_DIR}/icon-test-references
 
 # Directory where INPUT_FILES can be found
-INPUT_DIR=/usr/local/share/ICON_pool_local/grids/private/mpim/icon_preprocessing/source/initial_condition
+INPUT_DIR=/users/icontest/pool/data/ICON/grids/private/mpim/icon_preprocessing/source/initial_condition
 # Name of the input files
 INPUT_FILES=ifs2icon_1979010100_R02B04_G.nc
 
@@ -40,7 +40,7 @@ tolerance_file_name = ${REFERENCE_DIR}/${COMPILER}/tolerance/${EXP}.csv
 check_variable_names = ps,pfull,ta,hus,rho,ua,va,wap
 # seed the random perturbations. Each seed will generate a new set of input files (comma separated list)
 # these also serve as ID for input/output directories
-seeds = 1,2
+seeds = 1,2,3,4,5,6,7,8,9
 
 [perturb]
 # the amplitude of the relative perturbation
@@ -83,9 +83,9 @@ perturbed_run_script_name = exp.${PERT_EXP}.run
 # key-value pair to find the line in runscript that defines the input files
 init_keyval = datadir,initial_condition
 # How a ICON job is submitted
-submit_command = ksh
+submit_command = sbatch --wait --account=c15
 # can the jobs run in parallel?
-parallel = False
+parallel = True
 # only generate runscripts, do not run the model
 dry = False
 
@@ -93,10 +93,10 @@ dry = False
 # the plots that are created (supported: check, tolerance)
 plots = check,tolerance
 # the directory where the plots are stored
-savedir = /home/remo/mch/code/probtest
+savedir = ${ICON_DIR}/experiments/${EXP}
 EOF
 
-python probtest.py config.cfg stats tolerance check
+python probtest/probtest.py config.cfg perturb run stats tolerance check visualize
 
 echo copying reference from ${ICON_DIR}/experiments/${EXP}/statistics.csv to ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
 cp ${ICON_DIR}/experiments/${EXP}/statistics.csv ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
