@@ -2,21 +2,20 @@ import pandas as pd
 import itertools
 import sys
 
-from util.constants import dataframe_type_dict, compute_statistics, exp_modifier
+from util.constants import dataframe_type_dict, compute_statistics
 from util.dataframe_ops import compute_max_rel_diff_dataframe, select_max_diff
 
 
 def tolerance(config):
     stats_file_name = config.get("stats_file_name")
     tolerance_file_name = config.get("tolerance_file_name")
-    model_output_dir = config.get("model_output_dir")
-    experiment_name = config.get("experiment_name")
+    perturbed_model_output_dir = config.get("perturbed_model_output_dir")
     check_variable_names = config.get("check_variable_names").split(",")
     seeds = config.get("seeds").split(",")
     factor = config.getint("factor")
 
     # exp_modifier has a {seed} variable to be set
-    stats_file_path = '{}/{}/{}'.format(model_output_dir, experiment_name + exp_modifier, stats_file_name)
+    stats_file_path = '{}/{}'.format(perturbed_model_output_dir, stats_file_name)
 
     # read in stats files
     dfs = [pd.read_csv(stats_file_path.format(seed=s), sep=",", dtype=dataframe_type_dict, index_col=False)
@@ -39,7 +38,7 @@ def tolerance(config):
     print("applying a factor of {} to the spread".format(factor))
     df_max[compute_statistics] = df_max[compute_statistics] * factor
 
-    print("writing tolerance file to {}.".format(tolerance_file_name))
+    print("writing tolerance file to {}".format(tolerance_file_name))
     df_max.to_csv(tolerance_file_name, index=False)
 
     return

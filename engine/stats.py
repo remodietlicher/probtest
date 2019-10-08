@@ -4,7 +4,7 @@ import pandas as pd
 import sys
 
 from util.file_system import file_names_from_regex
-from util.constants import dataframe_type_dict, exp_modifier
+from util.constants import dataframe_type_dict
 
 
 def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims):
@@ -66,10 +66,26 @@ def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor
     return df
 
 
+def write_stats_file(input_dir, regex, stats_file_name, check_variable_names, time_dim, height_dim, hor_dims):
+    # load all model output data files matching the regex
+    input_files = file_names_from_regex(input_dir, regex)
+    if len(input_files) < 1:
+        print("no files found in '{}' for regex '{}'".format(input_dir, regex))
+        sys.exit(1)
+
+    data = [Dataset("{}/{}".format(input_dir, f), 'r') for f in input_files]
+
+    df = create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims)
+
+    path = "{}/{}".format(input_dir, stats_file_name)
+    print("writing stats file to {}".format(path))
+    df.to_csv(path_or_buf=path, sep=",", index=False)
+
+    for d in data:
+        d.close()
+
+
 def stats(config):
-    model_output_dir = config.get("model_output_dir")
-    experiment_name = config.get("experiment_name")
-    file_regex = config.get("file_regex")
     ensemble = config.getboolean("ensemble")
     check_variable_names = config.get("check_variable_names").split(",")
     time_dim = config.get("time_dim")
@@ -77,27 +93,19 @@ def stats(config):
     hor_dims = config.get("hor_dims").split(",")
     stats_file_name = config.get("stats_file_name")
 
+    model_output_dir = config.get("model_output_dir")
+    file_regex = config.get("file_regex")
+
+    # compute stats for the ensemble run
     if ensemble:
+        perturbed_file_regex = config.get("perturbed_file_regex")
         seeds = config.get("seeds").split(",")
-        experiments = [experiment_name + exp_modifier.format(seed=s) for s in seeds]
-    else:
-        experiments = [experiment_name]
+        perturbed_model_output_dir = config.get("perturbed_model_output_dir")
 
-    for exp in experiments:
-        input_dir = "{}/{}".format(model_output_dir, exp)
-        # load all model output data files matching the regex
-        input_files = file_names_from_regex(input_dir, file_regex.format(exp=exp))
-        if len(input_files) < 1:
-            print("no files found in '{}' for regex '{}'".format(input_dir, file_regex.format(exp=exp)))
-            sys.exit(1)
+        for s in seeds:
+            regex = perturbed_file_regex.format(seed=s)
+            input_dir = perturbed_model_output_dir.format(seed=s)
+            write_stats_file(input_dir, regex, stats_file_name, check_variable_names, time_dim, height_dim, hor_dims)
 
-        data = [Dataset("{}/{}".format(input_dir, f), 'r') for f in input_files]
-
-        df = create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims)
-
-        path = "{}/{}".format(input_dir, stats_file_name)
-        print("writing stats file to {}.".format(path))
-        df.to_csv(path_or_buf=path, sep=",", index=False)
-
-        for d in data:
-            d.close()
+    # always compute the stats for the reference
+    write_stats_file(model_output_dir, file_regex, stats_file_name, check_variable_names, time_dim, height_dim, hor_dims)

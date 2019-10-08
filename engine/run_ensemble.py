@@ -3,13 +3,11 @@ import subprocess
 import time
 import re
 
-from util.constants import exp_modifier, perturbed_model_input_subdir
 
-
-def prepare_perturbed_run_script(runscript, modified_runscript, init_key, init_value,
+def prepare_perturbed_run_script(runscript, perturbed_runscript, init_key, init_value,
                                  perturbed_model_input_dir, experiment_name, modified_experiment_name):
     in_file = open(runscript, 'r')
-    out_file = open(modified_runscript, 'w')
+    out_file = open(perturbed_runscript, 'w')
 
     for line in in_file:
         # replace input directory with the one given in config file
@@ -20,49 +18,63 @@ def prepare_perturbed_run_script(runscript, modified_runscript, init_key, init_v
             line = re.sub(experiment_name, modified_experiment_name, line)
         out_file.write(line)
 
-    print("writing model run script to: {}".format(modified_runscript))
+    print("writing model run script to: {}".format(perturbed_runscript))
     out_file.close()
     in_file.close()
 
     return
 
 
+def append_job(job, job_list, dry, parallel):
+    if not dry:
+        p = subprocess.Popen(job)
+        if not parallel:
+            p.communicate()
+            time.sleep(5)
+        else:
+            job_list.append(p)
+
+
+def finalize_jobs(job_list, dry, parallel):
+    if parallel and not dry:
+        for job in job_list:
+            job.communicate()
+
+
 def run_ensemble(config):
-    model_run_dir = config.get("model_run_dir")
-    model_run_script_name = config.get("model_run_script_name")
-    model_output_dir = config.get("model_output_dir")
+    run_dir = config.get("run_dir")
+    run_script_name = config.get("run_script_name")
+    perturbed_run_script_name = config.get("perturbed_run_script_name")
+    perturbed_model_input_dir = config.get("perturbed_model_input_dir")
     experiment_name = config.get("experiment_name")
+    perturbed_experiment_name = config.get("perturbed_experiment_name")
     submit_command = config.get("submit_command")
     init_key, init_val = config.get("init_keyval").split(",")
     seeds = config.get("seeds").split(",")
     parallel = config.getboolean("parallel")
     dry = config.getboolean("dry")
 
-    os.chdir(model_run_dir)
-    procs = []
+    os.chdir(run_dir)
+    job_list = []
+
+    # run the reference
+    job = submit_command.split(" ") + [run_script_name]
+    append_job(job, job_list, dry, parallel)
+
+    # run the ensemble
     for s in seeds:
-        modified_experiment_name = experiment_name + exp_modifier.format(seed=s)
-        perturbed_model_input_dir = "{}/{}/{}".format(model_output_dir, modified_experiment_name,
-                                                      perturbed_model_input_subdir)
-        runscript = "{}/{}".format(model_run_dir, model_run_script_name.format(exp=experiment_name))
-        modified_runscript = "{}/{}".format(model_run_dir, model_run_script_name.format(exp=modified_experiment_name))
+        runscript = "{}/{}".format(run_dir, run_script_name)
+        perturbed_runscript = "{}/{}".format(run_dir, perturbed_run_script_name.format(seed=s))
 
-        prepare_perturbed_run_script(runscript, modified_runscript,
-                                     init_key, init_val, perturbed_model_input_dir,
-                                     experiment_name, modified_experiment_name)
+        prepare_perturbed_run_script(runscript, perturbed_runscript,
+                                     init_key, init_val, perturbed_model_input_dir.format(seed=s),
+                                     experiment_name, perturbed_experiment_name.format(seed=s))
 
-        cmd_list = submit_command.format(seed=s).split(" ") + [os.path.basename(modified_runscript)]
-        if not dry:
-            p = subprocess.Popen(cmd_list)
-        print("running the model with '{}'".format(" ".join(cmd_list)))
-        if not dry:
-            if not parallel:
-                p.communicate()
-                time.sleep(5)
-            else:
-                procs.append(p)
+        job = submit_command.split(" ") + [perturbed_run_script_name.format(seed=s)]
 
-    if parallel and not dry:
-        for p in procs:
-            p.communicate()
+        print("running the model with '{}'".format(" ".join(job)))
+        append_job(job, job_list, dry, parallel)
+
+    finalize_jobs(job_list, dry, parallel)
+
     print("model finished!")
