@@ -7,7 +7,7 @@ EXP=$2
 # Parent directory of ICON
 ICON_DIR=$(pwd)
 # Directory where the tolerance and reference files should be stored
-REFERENCE_DIR=/project/c15/dremo/model/icon-test-references
+REFERENCE_DIR=/project/c14/data-eniac/icon-test-references
 
 # Directory where INPUT_FILES can be found
 INPUT_DIR=/users/icontest/pool/data/ICON/grids/private/mpim/icon_preprocessing/source/initial_condition
