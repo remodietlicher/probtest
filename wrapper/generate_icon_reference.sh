@@ -83,7 +83,7 @@ perturbed_run_script_name = exp.${PERT_EXP}.run
 # key-value pair to find the line in runscript that defines the input files
 init_keyval = datadir,initial_condition
 # How a ICON job is submitted
-submit_command = sbatch --wait --account=c15
+submit_command = sbatch --wait --account=g110
 # can the jobs run in parallel?
 parallel = True
 # only generate runscripts, do not run the model
