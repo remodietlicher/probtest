@@ -18,7 +18,7 @@ def create_perturb_files(in_path, in_files, out_path, copy_all_files=False):
         other_files = [f for f in all_files if f not in in_files]
         # copy all other files
         for f in other_files:
-            shutil.copy(f, out_path)
+            shutil.copy("{}/{}".format(in_path, f), out_path)
 
     return data
 
@@ -38,7 +38,7 @@ def perturb(config):
     seeds = np.array(config.get("seeds").split(",")).astype(int)
     variable_names = config.get("variable_names").split(",")
     amplitude = config.getfloat("amplitude")
-    copy_all_files = config.getbool("copy_all_files")
+    copy_all_files = config.getboolean("copy_all_files")
 
     for s in seeds:
         perturbed_model_input_dir_seed = perturbed_model_input_dir.format(seed=s)
