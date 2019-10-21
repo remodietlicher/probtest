@@ -10,7 +10,7 @@ ICON_DIR=$(pwd)
 REFERENCE_DIR=/project/c14/data-eniac/icon-test-references
 
 # Directory where INPUT_FILES can be found
-INPUT_DIR=/usr/local/share/ICON_pool_local/mch/input/${EXP}
+INPUT_DIR=/users/icontest/pool/data/ICON/mch/input/${EXP}
 # Name of the input files
 INPUT_FILES=igfff00000000.nc,igfff00000000_lbc.nc,igfff00030000_lbc.nc
 
