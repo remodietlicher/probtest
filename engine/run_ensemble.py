@@ -114,8 +114,8 @@ def run_ensemble(config):
     job_list = []
 
     # run the reference
-    #job = submit_command.split(" ") + [run_script_name]
-    #append_job(job, job_list, dry, parallel)
+    job = submit_command.split(" ") + [run_script_name]
+    append_job(job, job_list, dry, parallel)
 
     # run the ensemble
     for s in seeds:
