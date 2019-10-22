@@ -8,7 +8,7 @@ EXP=$2
 PERT_EXP=${EXP}_seed_{seed}
 
 # load machine specific settings
-source wrapper/setup_machine.sh
+source probtest/wrapper/setup_machine.sh
 
 # General setup for ICON
 cat > config.cfg << EOF
