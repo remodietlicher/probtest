@@ -30,7 +30,7 @@ stats_file_name = statistics.csv
 # the name of the file containing the tolerances (per timestep and variable)
 tolerance_file_name = ${REFERENCE_DIR}/${COMPILER}/tolerance/${EXP}.csv
 # the list of variables that is processed by stats, tolerance and check (comma separated list)
-check_variable_names = ps,pfull,ta,hus,rho,ua,va,wap
+check_variable_names = ps,pfull,ta,hus,rho,ua,va
 # seed the random perturbations. Each seed will generate a new set of input files (comma separated list)
 # these also serve as ID for input/output directories
 seeds = 1,2,3,4,5,6,7,8,9

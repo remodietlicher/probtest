@@ -16,13 +16,14 @@ case $(hostname) in
         # Machine specific submit
         case $USER in
             *dremo*)
-                export SUBMIT='sbatch --wait --account=c15'
+                export SUBMIT='sbatch --wait --account=c15 --partition=debug'
+                export PARALLEL=False
                 ;;
             *jenkins*)
                 export SUBMIT='sbatch --wait --account=g110'
+                export PARALLEL=True
                 ;;
         esac
-        export PARALLEL=True
         ;;
     *remo*)
         echo "using hostname" $(hostname)
