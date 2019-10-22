@@ -14,7 +14,7 @@ source wrapper/setup_machine.sh
 cat > config.cfg << EOF
 [DEFAULT]
 # the directory where the model input is stored
-model_input_dir = ${ICON_DATA_POOL}/mch/input/${EXP}
+model_input_dir = ${ICON_DATA_POOL}/grids/private/mpim/icon_preprocessing/source/initial_condition
 # Template for the directory where the perturbed model input is stored. Must contain "{seed}".
 perturbed_model_input_dir = ${ICON_DIR}/experiments/${PERT_EXP}/input
 # the directory where the model output is stored
@@ -39,11 +39,11 @@ seeds = 1,2,3,4,5,6,7,8,9
 # the amplitude of the relative perturbation
 amplitude = 1e-14
 # the files that need to be perturbed (comma separated list)
-files = igfff00000000.nc,igfff00000000_lbc.nc,igfff00030000_lbc.nc
+files = ifs2icon_1979010100_R02B04_G.nc
 # the variables that are perturbed (comma separated list)
 variable_names = T,QV
 # for some experiments, the whole input directory needs to be copies
-copy_all_files = True
+copy_all_files = False
 
 [stats]
 # the name (regex) of the files containing the variables to be used in the statistics file
@@ -78,18 +78,18 @@ perturbed_run_script_name = exp.${PERT_EXP}.run
 
 # replace assignments in the runscript. For multiples, use comma separated list. Note that the new right handside can depend on {seed}
 # define left handside
-lhs = latbc_path
+lhs = datadir
 # define new right handside 
 rhs_new = ${ICON_DIR}/experiments/${PERT_EXP}/input
 # define old right handside (optional, put None if not needed)
-rhs_old = None
+rhs_old = initial_condition
 
 # How a ICON job is submitted
 submit_command = ${SUBMIT}
 # can the jobs run in parallel?
 parallel = ${PARALLEL}
 # only generate runscripts, do not run the model
-dry = True
+dry = False
 
 [visualize]
 # the plots that are created (supported: check, tolerance)

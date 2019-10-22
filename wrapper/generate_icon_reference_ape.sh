@@ -4,24 +4,17 @@
 COMPILER=$1
 EXP=$2
 
-# Parent directory of ICON
-ICON_DIR=$(pwd)
-# Directory where the tolerance and reference files should be stored
-REFERENCE_DIR=/project/c14/data-eniac/icon-test-references
-
-# Directory where INPUT_FILES can be found
-INPUT_DIR=/users/icontest/pool/data/ICON/grids/private/mpim/icon_preprocessing/source/initial_condition
-# Name of the input files
-INPUT_FILES=ifs2icon_1979010100_R02B04_G.nc
-
 # Name of the experiments with perturbed input
 PERT_EXP=${EXP}_seed_{seed}
+
+# load machine specific settings
+source wrapper/setup_machine.sh
 
 # General setup for ICON
 cat > config.cfg << EOF
 [DEFAULT]
 # the directory where the model input is stored
-model_input_dir = ${INPUT_DIR}
+model_input_dir = None
 # Template for the directory where the perturbed model input is stored. Must contain "{seed}".
 perturbed_model_input_dir = ${ICON_DIR}/experiments/${PERT_EXP}/input
 # the directory where the model output is stored
@@ -46,9 +39,11 @@ seeds = 1,2,3,4,5,6,7,8,9
 # the amplitude of the relative perturbation
 amplitude = 1e-14
 # the files that need to be perturbed (comma separated list)
-files = ${INPUT_FILES}
+files = None
 # the variables that are perturbed (comma separated list)
 variable_names = T,QV
+# for some experiments, the whole input directory needs to be copies
+copy_all_files = False
 
 [stats]
 # the name (regex) of the files containing the variables to be used in the statistics file
@@ -80,12 +75,19 @@ run_dir = ${ICON_DIR}/run
 run_script_name = exp.${EXP}.run
 # Template for the perturbed experiment name. Must contain "{seed}".
 perturbed_run_script_name = exp.${PERT_EXP}.run
-# key-value pair to find the line in runscript that defines the input files
-init_keyval = datadir,initial_condition
+
+# replace assignments in the runscript. For multiples, use comma separated list. Note that the new right handside can depend on {seed}
+# define left handside
+lhs = zp_ape,ztmc_ape
+# define new right handside 
+rhs_new = None,None
+# define old right handside (optional, put None if not needed)
+rhs_old = None,None
+
 # How a ICON job is submitted
-submit_command = sbatch --wait --account=g110
+submit_command = ${SUBMIT}
 # can the jobs run in parallel?
-parallel = True
+parallel = ${PARALLEL}
 # only generate runscripts, do not run the model
 dry = False
 
@@ -96,7 +98,7 @@ plots = check,tolerance
 savedir = ${ICON_DIR}/experiments/${EXP}
 EOF
 
-python probtest/probtest.py config.cfg perturb run stats tolerance check
+python probtest.py config.cfg run stats tolerance check || exit 1
 
 echo copying reference from ${ICON_DIR}/experiments/${EXP}/statistics.csv to ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
 cp ${ICON_DIR}/experiments/${EXP}/statistics.csv ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
