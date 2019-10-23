@@ -33,7 +33,7 @@ tolerance_file_name = ${REFERENCE_DIR}/${COMPILER}/tolerance/${EXP}.csv
 check_variable_names = ps,pfull,ta,hus,rho,ua,va,wap
 # seed the random perturbations. Each seed will generate a new set of input files (comma separated list)
 # these also serve as ID for input/output directories
-seeds = 1,2,3,4,5,6,7,8,9
+seeds = 1,2,3
 
 [perturb]
 # the amplitude of the relative perturbation
@@ -78,11 +78,11 @@ perturbed_run_script_name = exp.${PERT_EXP}.run
 
 # replace assignments in the runscript. For multiples, use comma separated list. Note that the new right handside can depend on {seed}
 # define left handside
-lhs = zp_ape,ztmc_ape
+lhs = zp_ape,ztmc_ape,jw_temp0,jw_up,jw_u0
 # define new right handside 
-rhs_new = None,None
+rhs_new = None,None,None,None,None
 # define old right handside (optional, put None if not needed)
-rhs_old = None,None
+rhs_old = None,None,None,None,None
 
 # How a ICON job is submitted
 submit_command = ${SUBMIT}
