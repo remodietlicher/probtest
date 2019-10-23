@@ -33,7 +33,7 @@ tolerance_file_name = ${REFERENCE_DIR}/${COMPILER}/tolerance/${EXP}.csv
 check_variable_names = ps,pfull,ta,hus,rho,ua,va,wap
 # seed the random perturbations. Each seed will generate a new set of input files (comma separated list)
 # these also serve as ID for input/output directories
-seeds = 1,2,3
+seeds = 1,2,3,4,5,6,7,8,9
 
 [perturb]
 # the amplitude of the relative perturbation
