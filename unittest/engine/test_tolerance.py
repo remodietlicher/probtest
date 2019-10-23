@@ -2,8 +2,8 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from engine.tolerance import get_time_var_selector, compute_statistics, select_max_diff, compute_max_rel_diff_dataframe
-from util.constants import compute_statistics, dataframe_type_dict
+from engine.tolerance import select_max_diff, compute_max_rel_diff_dataframe
+from util.constants import compute_statistics
 
 TEST_VARIABLES = ["v1", "v2"]
 TEST_TIMESTEPS = np.arange(3)

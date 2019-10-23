@@ -24,6 +24,8 @@ def compute_max_rel_diff_dataframe(dataframe_ref, dataframe_cur, check_variable_
     for c in dataframe_ref.columns.values:
         if c in compute_statistics:
             diff_df[c] = ((dataframe_ref[c] - dataframe_cur[c]) / dataframe_ref[c]).abs()
+            equals = dataframe_cur[c] == dataframe_ref[c]
+            diff_df.loc[equals, c] = 0.0
         else:
             # we want the real values for 'descriptive' columns
             diff_df[c] = dataframe_ref[c]
@@ -54,7 +56,7 @@ def compute_div_dataframe(df1, df2):
 
 def pretty_print(df):
     fmt = {c: '{:.4e}'.format for c in compute_statistics}
-    fmt['ntime'] = '{:d}'.format
+    fmt['ntime'] = '{}'.format
 
     print(df.drop("time", axis=1).replace({np.nan: 0}).to_string(formatters=fmt, index=False))
 

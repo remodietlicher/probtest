@@ -2,8 +2,7 @@ import unittest
 import pandas as pd
 import numpy as np
 
-from engine.tolerance import get_time_var_selector, compute_statistics, select_max_diff, compute_max_rel_diff_dataframe
-from util.constants import compute_statistics, dataframe_type_dict
+from engine.tolerance import compute_max_rel_diff_dataframe
 from engine.check import check_variable
 
 TEST_VARIABLES = ["v1", "v2"]
@@ -19,12 +18,26 @@ def hand_written_dataframes():
                     "time": [1, 2, 3, 1, 2, 3],
                     "name": ["v1", "v1", "v1", "v2", "v2", "v2"]}
 
+    frame["ref0"] = {"max": [0, 0, 0, 0, 0, 0],
+                     "min": [0, 0, 0, 0, 0, 0],
+                     "mean": [0, 0, 0, 0, 0, 0],
+                     "ntime": [1, 2, 3, 1, 2, 3],
+                     "time": [1, 2, 3, 1, 2, 3],
+                     "name": ["v1", "v1", "v1", "v2", "v2", "v2"]}
+
     frame["cur"] = {"max": [1, 2, 5, 79, 93, 34],
                     "min": [3, 3, 5, 78, 13, 64],
                     "mean": [1, 10, 5, 55, 32, 27],
                     "ntime": [1, 2, 3, 1, 2, 3],
                     "time": [1, 2, 3, 1, 2, 3],
                     "name": ["v1", "v1", "v1", "v2", "v2", "v2"]}
+
+    frame["cur0"] = {"max": [0, 0, 0, 0, 0, 0],
+                     "min": [0, 0, 0, 0, 0, 0],
+                     "mean": [0, 0, 0, 0, 0, 0],
+                     "ntime": [1, 2, 3, 1, 2, 3],
+                     "time": [1, 2, 3, 1, 2, 3],
+                     "name": ["v1", "v1", "v1", "v2", "v2", "v2"]}
 
     frame["tol1"] = {"max": [10, 10, 10, 100, 100, 100],
                      "min": [10, 10, 10, 100, 100, 100],
@@ -66,6 +79,16 @@ class TestCheck(unittest.TestCase):
         self.assertFalse(out2, "Check with small tolerances did validate! Here is the DataFrame:\n{}".format(err2))
 
         return
+
+    def test_check_zeros(self):
+        df_cur0 = self.df_dict["cur0"]
+        df_ref0 = self.df_dict["ref0"]
+        df_tol = self.df_dict["tol1"]
+
+        df_diff = compute_max_rel_diff_dataframe(df_ref0, df_cur0, TEST_VARIABLES)
+
+        out1, err1, tol1 = check_variable(df_diff, df_tol)
+        self.assertTrue(out1, "Check with large tolerances did not validate! Here is the DataFrame:\n{}".format(err1))
 
 
 if __name__ == '__main__':
