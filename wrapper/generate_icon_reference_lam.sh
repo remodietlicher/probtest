@@ -64,9 +64,9 @@ factor = 5
 
 [check]
 # reference file to check against
-input_file_ref = ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
+input_file_ref = ${ICON_DIR}/experiments/${EXP}/statistics.csv
 # current file to be tested
-input_file_cur = ${ICON_DIR}/experiments/${EXP}/statistics.csv
+input_file_cur = ${ICON_DIR}/experiments/${PERT_EXP/\{seed\}/1}/statistics.csv
 
 [run]
 # directory from where the run is started (with "submit_command model_run_script_name")
@@ -98,7 +98,7 @@ plots = check,tolerance
 savedir = ${ICON_DIR}/experiments/${EXP}
 EOF
 
-python probtest/probtest.py config.cfg perturb run stats tolerance || exit 1
+python probtest/probtest.py config.cfg perturb run stats tolerance check || exit 1
 
 echo copying reference from ${ICON_DIR}/experiments/${EXP}/statistics.csv to ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
 cp ${ICON_DIR}/experiments/${EXP}/statistics.csv ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
