@@ -24,7 +24,7 @@ def compute_max_rel_diff_dataframe(dataframe_ref, dataframe_cur, check_variable_
     for c in dataframe_ref.columns.values:
         if c in compute_statistics:
             diff_df[c] = ((dataframe_ref[c] - dataframe_cur[c]) / dataframe_ref[c]).abs()
-            equals = dataframe_cur[c] == dataframe_ref[c]
+            equals = dataframe_cur.loc[:, c] == dataframe_ref.loc[:, c]
             diff_df.loc[equals, c] = 0.0
         else:
             # we want the real values for 'descriptive' columns
