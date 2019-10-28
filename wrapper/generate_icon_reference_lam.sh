@@ -49,7 +49,7 @@ copy_all_files = True
 # the name (regex) of the files containing the variables to be used in the statistics file
 file_regex = .*_atm_3d.*.nc
 # Template for the name (regex) of the files containing the variables to be used in the statistics file. Must contain "{seed}".
-perturbed_file_regex = ${PERT_EXP}_atm_3d.*.nc
+perturbed_file_regex = .*atm_3d.*.nc
 # For ensemble stats: the sub-directory where the ensemble outputs are
 ensemble = True
 # the time, height and horizontal dimensions within the model output files
