@@ -89,7 +89,7 @@ submit_command = ${SUBMIT}
 # can the jobs run in parallel?
 parallel = ${PARALLEL}
 # only generate runscripts, do not run the model
-dry = True
+dry = False
 
 [visualize]
 # the plots that are created (supported: check, tolerance)
