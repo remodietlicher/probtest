@@ -82,7 +82,7 @@ lhs = latbc_path
 # define new right handside 
 rhs_new = ${ICON_DIR}/experiments/${PERT_EXP}/input
 # define old right handside (optional, put None if not needed)
-rhs_old = None
+rhs_old = "${icon_data_poolFolder}/input/"
 
 # How a ICON job is submitted
 submit_command = ${SUBMIT}
