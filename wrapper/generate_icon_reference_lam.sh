@@ -14,7 +14,7 @@ source probtest/wrapper/setup_machine.sh
 cat > config.cfg << EOF
 [DEFAULT]
 # the directory where the model input is stored
-model_input_dir = ${ICON_DATA_POOL}/mch/input/${EXP}
+model_input_dir = ${ICON_DATA_POOL}/mch/input/ch_lowres
 # Template for the directory where the perturbed model input is stored. Must contain "{seed}".
 perturbed_model_input_dir = ${ICON_DIR}/experiments/${PERT_EXP}/input
 # the directory where the model output is stored
