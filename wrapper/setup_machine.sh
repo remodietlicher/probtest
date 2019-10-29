@@ -28,7 +28,7 @@ case $(hostname) in
     *remo*)
         echo "using hostname" $(hostname)
         # Parent directory of ICON
-        export ICON_DIR=/home/remo/mch/model/icon/icon_gpu
+        export ICON_DIR=/home/remo/mch/model/icon/icon_cpu
         # Directory where the tolerance and reference files should be stored
         export REFERENCE_DIR=/home/remo/mch/model/icon/icon-test-references
 
