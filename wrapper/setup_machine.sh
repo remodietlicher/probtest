@@ -11,7 +11,7 @@ case $(hostname) in
         export REFERENCE_DIR=/project/c14/data-eniac/icon-test-references
 
         # Directory where INPUT_FILES can be found
-        export ICON_DATA_POOL=/scratch/snx3000/dremo/remo_icon_pool
+        export ICON_DATA_POOL=/users/icontest/pool/data/ICON
 
         # Machine specific submit
         case $USER in
