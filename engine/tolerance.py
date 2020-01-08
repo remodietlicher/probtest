@@ -10,16 +10,19 @@ def tolerance(config):
     stats_file_name = config.get("stats_file_name")
     tolerance_file_name = config.get("tolerance_file_name")
     perturbed_model_output_dir = config.get("perturbed_model_output_dir")
+    model_output_dir = config.get("model_output_dir")
     check_variable_names = config.get("check_variable_names").split(",")
     seeds = config.get("seeds").split(",")
     factor = config.getint("factor")
 
     # exp_modifier has a {seed} variable to be set
     stats_file_path = '{}/{}'.format(perturbed_model_output_dir, stats_file_name)
+    ref_stats_file_path = '{}/{}'.format(model_output_dir, stats_file_name)
 
     # read in stats files
     dfs = [pd.read_csv(stats_file_path.format(seed=s), sep=",", dtype=dataframe_type_dict, index_col=False)
            for s in seeds]
+    dfs.append(pd.read_csv(ref_stats_file_path, sep=",", dtype=dataframe_type_dict, index_col=False))
 
     ndata = len(dfs)
     if ndata < 2:
