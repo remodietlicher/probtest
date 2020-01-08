@@ -31,7 +31,7 @@ def check(config):
     df_ref = pd.read_csv(input_file_ref, index_col=False, dtype=dataframe_type_dict)
     df_cur = pd.read_csv(input_file_cur, index_col=False, dtype=dataframe_type_dict)
 
-    print("checking {} against {}".format(input_file_cur, input_file_ref))
+    print("checking {} against {} using tolerances from {}".format(input_file_cur, input_file_ref, tolerance_file_name))
 
     diff_df = compute_max_rel_diff_dataframe(df_ref, df_cur, check_variable_names)
 
