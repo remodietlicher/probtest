@@ -21,6 +21,7 @@ case $(hostname) in
                 ;;
             *jenkins*)
                 export SUBMIT='sbatch --wait --account=g110'
+                export REFERENCE_DIR='/scratch/snx3000/jenkins/workspace/icon_reference_generator/label/daint/icon-test-references'
                 export PARALLEL=True
                 ;;
         esac
