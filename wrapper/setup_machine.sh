@@ -28,7 +28,7 @@ case $(hostname) in
         ;;
     *mlogin*)
         export ICON_DIR=$(pwd)
-        export REFERENCE_DIR='/pf/b/b380729/workspace/label/mistral/icon-test-references'
+        export REFERENCE_DIR='/pf/b/b380729/workspace/label/mistral/icon_reference_generator/icon-test-references'
         export ICON_DATA_POOL='/pool/data/ICON/'
         export SUBMIT='sbatch -Amh0287'
         ;;
