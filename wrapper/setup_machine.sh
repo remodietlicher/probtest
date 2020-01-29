@@ -21,14 +21,14 @@ case $(hostname) in
                 ;;
             *jenkins*)
                 export SUBMIT='sbatch --wait --account=g110'
-                export REFERENCE_DIR='/scratch/snx3000/jenkins/workspace/icon_reference_generator/label/daint/icon-test-references'
+                export REFERENCE_DIR='/scratch/snx3000/jenkins/workspace/icon_reference_generator/slave/daint/icon-test-references'
                 export PARALLEL=True
                 ;;
         esac
         ;;
     *mlogin*)
         export ICON_DIR=$(pwd)
-        export REFERENCE_DIR='/pf/b/b380729/workspace/label/mistral/icon_reference_generator/icon-test-references'
+        export REFERENCE_DIR='/pf/b/b380729/workspace/label/mistral/icon_reference_generator/slave/mistral/icon-test-references'
         export ICON_DATA_POOL='/pool/data/ICON/'
         export SUBMIT='sbatch -Amh0287'
         ;;
