@@ -69,6 +69,10 @@ def write_stats_file(input_dir, regex, stats_file_name, check_variable_names, ti
     # load all model output data files matching the regex
     input_files = file_names_from_regex(input_dir, regex)
 
+    print("Files used to create stats file:")
+    for f in input_files:
+        print(f)
+
     data = [Dataset("{}/{}".format(input_dir, f), 'r') for f in input_files]
 
     df = create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor_dims)
