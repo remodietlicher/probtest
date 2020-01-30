@@ -1,7 +1,6 @@
 from netCDF4 import Dataset
 import numpy as np
 import pandas as pd
-import sys
 
 from util.file_system import file_names_from_regex
 from util.constants import dataframe_type_dict
@@ -69,9 +68,6 @@ def create_stats_dataframe(data, check_variable_names, time_dim, height_dim, hor
 def write_stats_file(input_dir, regex, stats_file_name, check_variable_names, time_dim, height_dim, hor_dims):
     # load all model output data files matching the regex
     input_files = file_names_from_regex(input_dir, regex)
-    if len(input_files) < 1:
-        print("no files found in '{}' for regex '{}'".format(input_dir, regex))
-        sys.exit(1)
 
     data = [Dataset("{}/{}".format(input_dir, f), 'r') for f in input_files]
 
