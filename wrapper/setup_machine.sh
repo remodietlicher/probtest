@@ -30,7 +30,7 @@ case $(hostname) in
         export ICON_DIR=$(pwd)
         export REFERENCE_DIR='/pf/b/b380729/workspace/label/mistral/icon_reference_generator/slave/mistral/icon-test-references'
         export ICON_DATA_POOL='/pool/data/ICON/'
-        export SUBMIT='sbatch -Amh0287'
+        export SUBMIT='sbatch --wait -Amh0287'
         export PARALLEL=True
         ;;
     *remo*)
