@@ -100,7 +100,10 @@ EOF
 
 python probtest/probtest.py config.cfg perturb run stats tolerance check || exit 1
 
-echo copying reference from ${ICON_DIR}/experiments/${EXP}/statistics.csv to ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
-cp ${ICON_DIR}/experiments/${EXP}/statistics.csv ${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv
+echo copying reference from "${ICON_DIR}/experiments/${EXP}/statistics.csv" to "${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv"
+if [[ ! -d "${REFERENCE_DIR}/${COMPILER}/reference" ]]; then
+  mkdir -p "${REFERENCE_DIR}/${COMPILER}/reference"
+fi
+cp "${ICON_DIR}/experiments/${EXP}/statistics.csv" "${REFERENCE_DIR}/${COMPILER}/reference/${EXP}.csv"
 
 

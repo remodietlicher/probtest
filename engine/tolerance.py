@@ -1,6 +1,7 @@
 import pandas as pd
 import itertools
 import sys
+import os
 
 from util.constants import dataframe_type_dict, compute_statistics
 from util.dataframe_ops import compute_max_rel_diff_dataframe, select_max_diff
@@ -41,6 +42,9 @@ def tolerance(config):
     print("applying a factor of {} to the spread".format(factor))
     df_max[compute_statistics] = df_max[compute_statistics] * factor
 
+    tolerance_dir = os.path.dirname(tolerance_file_name)
+    if not os.path.exists(tolerance_dir):
+        os.makedirs(tolerance_dir)
     print("writing tolerance file to {}".format(tolerance_file_name))
     df_max.to_csv(tolerance_file_name, index=False)
 
